@@ -2,50 +2,49 @@ import java.util.ArrayList;
 
 public class PropertyAssessment {
     private final Integer accountNumber;
-    private final Integer suite;
     private final Integer houseNumber;
     private final String streetName;
-    private final Boolean hasGarage;
-    private final Integer neighbourhoodId;
     private final String neighbourhood;
     private final String ward;
     private final Integer assessedValue;
-    private final Double latitude;
-    private final Double longitude;
-    private final String location;
-    private ArrayList<Integer> assessmentClassPercentages = new ArrayList<>();
-    private ArrayList<String> assessmentClasses = new ArrayList<>();
+    private final Point location;
+    private final ArrayList<Integer> assessmentClassPercentages;
+    private final ArrayList<String> assessmentClasses;
 
     // Making this 'private' enforces the use of the factory method for initialization
-    private PropertyAssessment(Integer accountNumber, Integer suite, Integer houseNumber, String streetName,
-                               Boolean hasGarage, Integer neighbourhoodId, String neighbourhood, String ward,
-                               Integer assessedValue, Double latitude, Double longitude, String location,
+    private PropertyAssessment(Integer accountNumber, Integer houseNumber, String streetName,
+                               String neighbourhood, String ward,
+                               Integer assessedValue, String location,
                                ArrayList<Integer> assessmentClassPercentages, ArrayList<String> assessmentClasses) {
         this.accountNumber = accountNumber;
-        this.suite = suite;
         this.houseNumber = houseNumber;
         this.streetName = streetName;
-        this.hasGarage = hasGarage;
-        this.neighbourhoodId = neighbourhoodId;
         this.neighbourhood = neighbourhood;
         this.ward = ward;
         this.assessedValue = assessedValue;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.location = location;
+        this.location = parsePoint(location);
         this.assessmentClassPercentages = assessmentClassPercentages;
         this.assessmentClasses = assessmentClasses;
+    }
+
+    public Integer getAccountNumber() {
+        return accountNumber;
+    }
+
+    public Integer getAssessedValue() {
+        return assessedValue;
+    }
+
+    public String getNeighbourhood() {
+        return neighbourhood;
     }
 
     public static PropertyAssessment fromCSV(String csvLine) {
         String[] fields = csvLine.split(",");
 
         Integer accountNumber = parseInteger(fields[0]);
-        Integer suite = parseInteger(fields[1]);
         Integer houseNumber = parseInteger(fields[2]);
         String streetName = fields[3].trim();
-        Boolean hasGarage = fields[4].trim().equalsIgnoreCase("Y");
-        Integer neighbourhoodId = parseInteger(fields[5]);
         String neighbourhood = fields[6].trim();
         String ward = fields[7].trim();
         Integer assessedValue = parseInteger(fields[8]);
@@ -66,8 +65,8 @@ public class PropertyAssessment {
             }
         }
 
-        return new PropertyAssessment(accountNumber, suite, houseNumber, streetName, hasGarage, neighbourhoodId,
-                neighbourhood, ward, assessedValue, latitude, longitude, location, assessmentClassPercentages, assessmentClasses);
+        return new PropertyAssessment(accountNumber, houseNumber, streetName,
+                neighbourhood, ward, assessedValue, location, assessmentClassPercentages, assessmentClasses);
     }
 
     private static Integer parseInteger(String value) {
@@ -83,6 +82,26 @@ public class PropertyAssessment {
             return value.trim().isEmpty() ? null : Double.parseDouble(value.trim());
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    private static Point parsePoint(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Point value is null!");
+        }
+
+        try {
+            String[] parts = value.trim().split(",");
+            String xString = parts[0].trim().substring(1);
+            String yString = parts[1].trim().substring(0, parts[1].trim().length() - 1);
+
+            Double[] coordinates = new Double[2];
+            coordinates[0] = parseDouble(xString);
+            coordinates[1] = parseDouble(yString);
+
+            return new Point(coordinates[1], coordinates[0]);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse POINT string: " + value, e);
         }
     }
 
