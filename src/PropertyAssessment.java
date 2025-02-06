@@ -2,12 +2,10 @@ import java.util.ArrayList;
 
 public class PropertyAssessment {
     private final Integer accountNumber;
-    private final Integer houseNumber;
-    private final String streetName;
-    private final String neighbourhood;
-    private final String ward;
+    private final Address address;
+    private final Neighbourhood neighbourhood;
     private final Integer assessedValue;
-    private final Point location;
+    private final Location location;
     private final ArrayList<Integer> assessmentClassPercentages;
     private final ArrayList<String> assessmentClasses;
 
@@ -17,10 +15,8 @@ public class PropertyAssessment {
                                Integer assessedValue, String location,
                                ArrayList<Integer> assessmentClassPercentages, ArrayList<String> assessmentClasses) {
         this.accountNumber = accountNumber;
-        this.houseNumber = houseNumber;
-        this.streetName = streetName;
-        this.neighbourhood = neighbourhood;
-        this.ward = ward;
+        this.address = new Address(houseNumber, streetName);
+        this.neighbourhood = new Neighbourhood(neighbourhood, ward);
         this.assessedValue = assessedValue;
         this.location = parsePoint(location);
         this.assessmentClassPercentages = assessmentClassPercentages;
@@ -35,8 +31,12 @@ public class PropertyAssessment {
         return assessedValue;
     }
 
-    public String getNeighbourhood() {
+    public Neighbourhood getNeighbourhood() {
         return neighbourhood;
+    }
+
+    public Boolean isAssessmentClass(String className) {
+        return assessmentClasses.contains(className.toUpperCase());
     }
 
     public static PropertyAssessment fromCSV(String csvLine) {
@@ -85,7 +85,7 @@ public class PropertyAssessment {
         }
     }
 
-    private static Point parsePoint(String value) {
+    private static Location parsePoint(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Point value is null!");
         }
@@ -99,7 +99,7 @@ public class PropertyAssessment {
             coordinates[0] = parseDouble(xString);
             coordinates[1] = parseDouble(yString);
 
-            return new Point(coordinates[1], coordinates[0]);
+            return new Location(coordinates[1], coordinates[0]);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse POINT string: " + value, e);
         }
@@ -109,7 +109,7 @@ public class PropertyAssessment {
     public String toString() {
         ArrayList<String> result_list = new ArrayList<>();
         result_list.add("Account number = " + accountNumber);
-        result_list.add("Address = " + (houseNumber != null ? houseNumber + " " : "") + streetName);
+        result_list.add("Address = " + address);
         result_list.add("Assessed value = " + assessedValue);
 
         if (!assessmentClasses.isEmpty()) {
@@ -124,7 +124,7 @@ public class PropertyAssessment {
             result_list.add("Assessment class = None");
         }
 
-        result_list.add("Neighbourhood = " + neighbourhood + " (" + ward + ")");
+        result_list.add("Neighbourhood = " + neighbourhood);
         result_list.add("Location = " + location);
 
         return String.join("\n", result_list);

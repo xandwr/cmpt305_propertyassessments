@@ -1,8 +1,8 @@
-public class Point {
+public class Location {
     Double x;
     Double y;
 
-    public Point(Double x, Double y) {
+    public Location(Double x, Double y) {
         this.x = x;
         this.y = y;
     }
