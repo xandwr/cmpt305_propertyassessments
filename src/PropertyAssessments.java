@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+/// Stores all property assessments in the data.
 public class PropertyAssessments {
     private final List<PropertyAssessment> assessments;
     private final Statistics globalStats;

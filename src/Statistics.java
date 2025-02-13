@@ -3,6 +3,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+/// Tracks and manages individual statistics for given entries.
 public class Statistics {
     private final int n;
     private final BigDecimal min;
@@ -32,5 +33,9 @@ public class Statistics {
         System.out.println("mean = " + df.format(mean));
         System.out.println("median = " + df.format(median));
         System.out.println();
+    }
+
+    public BigDecimal getMax() {
+        return max;
     }
 }

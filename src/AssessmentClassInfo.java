@@ -4,6 +4,7 @@ import java.util.List;
 public class AssessmentClassInfo {
     private final List<AssessmentClass> classes = new ArrayList<>();
 
+    /// <summary>Stores the list of assessment classes for a given CSV entry.</summary>
     public AssessmentClassInfo(
             String classPercent1, String classPercent2, String classPercent3,
             String className1, String className2, String className3

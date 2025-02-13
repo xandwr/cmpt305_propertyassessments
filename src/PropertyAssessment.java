@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+/// Stores all data for a CSV entry, representing an entire property assessment.
 public class PropertyAssessment implements Comparable<PropertyAssessment> {
     private final Integer accountNumber;
     private final Address address;
